@@ -4,13 +4,15 @@ import "mapbox-gl/dist/mapbox-gl.css";
 
 import styled from "styled-components";
 
-import { TripsLayer } from "deck.gl";
-import { useState } from "react";
+import { ArcLayer, TripsLayer } from "deck.gl";
+import { HeatmapLayer } from "@deck.gl/aggregation-layers";
+import { useState, useEffect } from "react";
 
 import { subwayStationLayer } from "../layers/stationLayers";
 
 import magokRents from "../utils/data/magok.json";
 import myRents from "../utils/data/mokdong_yeongdeungpo.json";
+import sample from "../utils/data/sample_1st.json";
 
 import GL from "@luma.gl/constants";
 
@@ -21,34 +23,47 @@ const Container = styled.div`
   z-index: 1;
   width: 1280px;
   height: 99.5vh;
-
-  & .mapboxgl-popup.mapboxgl-popup-anchor-bottom {
-    position: absolute;
-    z-index: 2;
-    top: 0;
-  }
 `;
 
 const TimeContainer = styled.p`
   position: absolute;
   top: 20px;
-  left: 20px;
+  right: 20px;
   color: #fff;
   font-weight: bold;
   font-size: 20;
+`;
+
+const ButtonContainer = styled.button`
+  position: absolute;
+  top: 50px;
+  right: 20px;
+  color: #fff;
+  font-weight: bold;
+  font-size: 20;
+  background-color: #fff;
+  transition: ease 0.2s;
+  &:active {
+    transform: scale(0.95);
+  }
+
+  width: 80px;
+  height: 80px;
+  border-radius: 40px;
 `;
 
 export default function Viz() {
   const MAP_STYLE =
     "https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json";
 
-  const [time, setTime] = useState(3600 * 8);
-  // const [animation] = useState({});
+  const [time, setTime] = useState(3600 * 17);
+  const [animation] = useState({});
+  const [mode, setMode] = useState("Particle");
 
   // const animationSpeed = 5;
 
   // const animate = () => {
-  //   setTime((t) => (t > 3600 * 9 ? 3600 * 6 : t + animationSpeed));
+  //   setTime((t) => (t > 3600 * 20 ? 3600 * 17 : t + animationSpeed));
   //   animation.id = window.requestAnimationFrame(animate);
   // };
 
@@ -57,15 +72,15 @@ export default function Viz() {
   //   return () => window.cancelAnimationFrame(animation.id);
   // }, [animation, animate]);
 
-  const [view, setView] = useState({
+  const view = {
     latitude: 37.5663,
-    longitude: 126.978,
-    zoom: 12,
-  });
+    longitude: 126.818,
+    zoom: 10.2,
+  };
 
-  const magokTripLayer = new TripsLayer({
+  const sampleTripLayer = new TripsLayer({
     id: "trips-layer",
-    data: magokRents,
+    data: sample,
     getPath: (d) => {
       return d.path;
     },
@@ -79,33 +94,43 @@ export default function Viz() {
     currentTime: time,
   });
 
-  const MYTripLayer = new TripsLayer({
-    id: "trips-layer-my",
-    data: myRents,
-    getPath: (d) => {
-      return d.path;
-    },
-    getTimestamps: (d) => d.timestamp,
-    getColor: [253, 128, 93, 128],
-    opacity: 1,
-    widthMinPixels: 3,
-    rounded: true,
-    fadeTrail: true,
-    trailLength: 40,
-    currentTime: time,
+  const routeLayer = new ArcLayer({
+    id: "arc-layer",
+    data: sample,
+    getSourcePosition: (d) => [d.rent_x, d.rent_y],
+    getTargetPosition: (d) => [d.return_x, d.return_y],
+    getSourceColor: [255, 128, 93, 8],
+    getTargetColor: [255, 128, 93, 8],
+    getWidth: 1,
   });
+
+  const heatmapLayer = new HeatmapLayer({
+    id: "heatmap-layer",
+    data: sample,
+    getPosition: (d) => [d.rent_x, d.rent_y],
+    theshold: 3,
+  });
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    setMode(mode === "Arc" ? "Heatmap" : "Arc");
+    setTime(3600 * 17);
+  };
 
   return (
     <Container>
       <DeckGL
-        initialViewState={view}
         controller={true}
-        layers={[]}
+        layers={[
+          mode === "Arc" && routeLayer,
+          mode === "Heatmap" && heatmapLayer,
+        ]}
         parameters={{
           blendFunc: [GL.SRC_ALPHA, GL.ONE, GL.ONE_MINUS_DST_ALPHA, GL.ONE],
           blendEquation: GL.FUNC_ADD,
         }}
         width="100%"
+        initialViewState={view}
       >
         <Map
           mapboxAccessToken={
@@ -117,6 +142,9 @@ export default function Viz() {
       <TimeContainer>{`${Math.floor(time / 3600)}/${Math.floor(
         (time % 3600) / 60
       )}/${Math.floor((time % 3600) % 60)}`}</TimeContainer>
+      <ButtonContainer onClick={handleClick}>Test</ButtonContainer>
+      <ButtonContainer onClick={handleClick}>Test</ButtonContainer>
+      <ButtonContainer onClick={handleClick}>Test</ButtonContainer>
     </Container>
   );
 }

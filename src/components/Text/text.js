@@ -9,6 +9,6 @@ export const AText = styled.a`
 
 export const Description = styled.p`
   margin: 0 0 15px 0;
-  line-height: 26px;
-  font-size: 16px;
+  font-size: 15px;
+  line-height: 24px;
 `;
