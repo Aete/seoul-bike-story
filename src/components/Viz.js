@@ -36,12 +36,12 @@ const TimeContainer = styled.p`
 
 const ButtonContainer = styled.button`
   position: absolute;
-  top: 50px;
+  top: ${({ yPos }) => yPos}px;
   right: 20px;
   color: #fff;
   font-weight: bold;
   font-size: 20;
-  background-color: #fff;
+  background-color: none;
   transition: ease 0.2s;
   &:active {
     transform: scale(0.95);
@@ -49,6 +49,7 @@ const ButtonContainer = styled.button`
 
   width: 80px;
   height: 80px;
+  border: 1px solid #fff;
   border-radius: 40px;
 `;
 
@@ -60,17 +61,17 @@ export default function Viz() {
   const [animation] = useState({});
   const [mode, setMode] = useState("Particle");
 
-  // const animationSpeed = 5;
+  const animationSpeed = 5;
 
-  // const animate = () => {
-  //   setTime((t) => (t > 3600 * 20 ? 3600 * 17 : t + animationSpeed));
-  //   animation.id = window.requestAnimationFrame(animate);
-  // };
+  const animate = () => {
+    setTime((t) => (t > 3600 * 20 ? 3600 * 17 : t + animationSpeed));
+    animation.id = window.requestAnimationFrame(animate);
+  };
 
-  // useEffect(() => {
-  //   animation.id = window.requestAnimationFrame(animate);
-  //   return () => window.cancelAnimationFrame(animation.id);
-  // }, [animation, animate]);
+  useEffect(() => {
+    animation.id = window.requestAnimationFrame(animate);
+    return () => window.cancelAnimationFrame(animation.id);
+  }, [animation, animate]);
 
   const view = {
     latitude: 37.5663,
@@ -111,9 +112,9 @@ export default function Viz() {
     theshold: 3,
   });
 
-  const handleClick = (e) => {
+  const handleClick = (e, mode) => {
     e.preventDefault();
-    setMode(mode === "Arc" ? "Heatmap" : "Arc");
+    setMode(mode);
     setTime(3600 * 17);
   };
 
@@ -123,6 +124,7 @@ export default function Viz() {
         controller={true}
         layers={[
           mode === "Arc" && routeLayer,
+          mode === "Particle" && sampleTripLayer,
           mode === "Heatmap" && heatmapLayer,
         ]}
         parameters={{
@@ -142,9 +144,15 @@ export default function Viz() {
       <TimeContainer>{`${Math.floor(time / 3600)}/${Math.floor(
         (time % 3600) / 60
       )}/${Math.floor((time % 3600) % 60)}`}</TimeContainer>
-      <ButtonContainer onClick={handleClick}>Test</ButtonContainer>
-      <ButtonContainer onClick={handleClick}>Test</ButtonContainer>
-      <ButtonContainer onClick={handleClick}>Test</ButtonContainer>
+      <ButtonContainer onClick={(e) => handleClick(e, "Arc")} yPos={50}>
+        Test
+      </ButtonContainer>
+      <ButtonContainer onClick={(e) => handleClick(e, "Particle")} yPos={150}>
+        Test
+      </ButtonContainer>
+      <ButtonContainer onClick={(e) => handleClick(e, "Heatmap")} yPos={250}>
+        Test
+      </ButtonContainer>
     </Container>
   );
 }
