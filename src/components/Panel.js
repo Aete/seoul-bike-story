@@ -2,6 +2,8 @@ import styled from "styled-components";
 import Anno from "./panels/Anno";
 import { useState } from "react";
 import Count from "./panels/Count";
+import Movement from "./panels/Movment";
+import Route from "./panels/Route";
 
 const Container = styled.div`
   display: flex;
@@ -52,15 +54,17 @@ export default function Panel() {
     setPage(page - 1);
   };
 
-  const pageLength = 1;
+  const pageLength = 3;
 
   return (
     <Container>
       {page === 0 && <Anno />}
       {page === 1 && <Count />}
+      {page === 2 && <Route />}
+      {page === 3 && <Movement />}
       <ButtonContainer>
-        {page < pageLength && <Button onClick={handleNext}>Next</Button>}
         {page > 0 && <Button onClick={handlePrevious}>Previous</Button>}
+        {page < pageLength && <Button onClick={handleNext}>Next</Button>}
       </ButtonContainer>
     </Container>
   );
