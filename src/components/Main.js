@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Viz from "./Viz";
-import Anno from "./Anno";
+import Panel from "./Panel";
 
 const Container = styled.div`
   display: flex;
@@ -13,7 +13,7 @@ const Container = styled.div`
 export default function Main() {
   return (
     <Container>
-      <Anno />
+      <Panel />
       <Viz />
     </Container>
   );

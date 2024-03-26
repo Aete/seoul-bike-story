@@ -4,15 +4,11 @@ import "mapbox-gl/dist/mapbox-gl.css";
 
 import styled from "styled-components";
 
-import { ArcLayer, TripsLayer } from "deck.gl";
+import { ArcLayer, PathLayer, TripsLayer } from "deck.gl";
 import { HeatmapLayer } from "@deck.gl/aggregation-layers";
 import { useState, useEffect } from "react";
 
-import { subwayStationLayer } from "../layers/stationLayers";
-
-import magokRents from "../utils/data/magok.json";
-import myRents from "../utils/data/mokdong_yeongdeungpo.json";
-import sample from "../utils/data/sample_1st.json";
+import sample from "../utils/data/sample_final.json";
 
 import GL from "@luma.gl/constants";
 
@@ -61,17 +57,17 @@ export default function Viz() {
   const [animation] = useState({});
   const [mode, setMode] = useState("Particle");
 
-  const animationSpeed = 5;
+  // const animationSpeed = 5;
 
-  const animate = () => {
-    setTime((t) => (t > 3600 * 20 ? 3600 * 17 : t + animationSpeed));
-    animation.id = window.requestAnimationFrame(animate);
-  };
+  // const animate = () => {
+  //   setTime((t) => (t > 3600 * 20 ? 3600 * 17 : t + animationSpeed));
+  //   animation.id = window.requestAnimationFrame(animate);
+  // };
 
-  useEffect(() => {
-    animation.id = window.requestAnimationFrame(animate);
-    return () => window.cancelAnimationFrame(animation.id);
-  }, [animation, animate]);
+  // useEffect(() => {
+  //   animation.id = window.requestAnimationFrame(animate);
+  //   return () => window.cancelAnimationFrame(animation.id);
+  // }, [animation, animate]);
 
   const view = {
     latitude: 37.5663,
@@ -81,7 +77,7 @@ export default function Viz() {
 
   const sampleTripLayer = new TripsLayer({
     id: "trips-layer",
-    data: sample,
+    data: sample.slice(0, 20000),
     getPath: (d) => {
       return d.path;
     },
@@ -105,11 +101,14 @@ export default function Viz() {
     getWidth: 1,
   });
 
-  const heatmapLayer = new HeatmapLayer({
-    id: "heatmap-layer",
-    data: sample,
-    getPosition: (d) => [d.rent_x, d.rent_y],
-    theshold: 3,
+  const pathLayer = new PathLayer({
+    id: "path-layer",
+    data: sample.slice(0, 20000),
+    getpath: (d) => d.path,
+    getWidth: 1,
+    getColor: [255, 128, 93, 2],
+    widthScale: 20,
+    widthMinPixels: 2,
   });
 
   const handleClick = (e, mode) => {
@@ -123,9 +122,9 @@ export default function Viz() {
       <DeckGL
         controller={true}
         layers={[
-          mode === "Arc" && routeLayer,
-          mode === "Particle" && sampleTripLayer,
-          mode === "Heatmap" && heatmapLayer,
+          // mode === "Arc" && routeLayer,
+          // mode === "Particle" && sampleTripLayer,
+          mode === "Heatmap" && pathLayer,
         ]}
         parameters={{
           blendFunc: [GL.SRC_ALPHA, GL.ONE, GL.ONE_MINUS_DST_ALPHA, GL.ONE],
