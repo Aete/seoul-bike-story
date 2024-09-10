@@ -57,6 +57,30 @@ const Label = styled.label`
   margin-bottom: 5px;
 `;
 
+const ButtonContainer = styled.button`
+  position: absolute;
+  top: ${({ yPos }) => yPos}px;
+  right: 20px;
+  color: #fff;
+  font-weight: bold;
+  font-size: 20;
+  background-color: none;
+  transition: ease 0.2s;
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &:hover {
+    background-color: #fff;
+    color: #000;
+  }
+
+  width: 80px;
+  height: 80px;
+  border: 1px solid #fff;
+  border-radius: 40px;
+`;
+
 export default function Viz() {
   const scrollPosition = useRecoilValue(scrollPositionState);
   const communityPosition = useRecoilValue(communityPositionState);
@@ -229,6 +253,42 @@ export default function Viz() {
     widthMinPixels: 1,
   });
 
+  const handleClick = (cluster) => {
+    if (cluster === "magok") {
+      setViewState({
+        latitude: 37.5638,
+        longitude: 126.804,
+        zoom: 13.5,
+        transitionDuration: 1000,
+        transitionInterpolator: new FlyToInterpolator(),
+        bearing: -45,
+        pitch: 60,
+      });
+    }
+    if (cluster === "jamsil") {
+      setViewState({
+        latitude: 37.514634749,
+        longitude: 127.094260695,
+        zoom: 13.3,
+        transitionDuration: 1000,
+        transitionInterpolator: new FlyToInterpolator(),
+        bearing: -45,
+        pitch: 60,
+      });
+    }
+    if (cluster === "gwangjin") {
+      setViewState({
+        latitude: 37.523634749,
+        longitude: 127.060260695,
+        zoom: 13.7,
+        transitionDuration: 1000,
+        transitionInterpolator: new FlyToInterpolator(),
+        bearing: -45,
+        pitch: 60,
+      });
+    }
+  };
+
   return (
     <Container>
       <DeckGL
@@ -257,6 +317,19 @@ export default function Viz() {
           mapStyle={MAP_STYLE}
         />
       </DeckGL>
+      {page === "heatmap" && (
+        <div>
+          <ButtonContainer onClick={() => handleClick("magok")} yPos={20}>
+            Cluster 1
+          </ButtonContainer>
+          <ButtonContainer onClick={() => handleClick("jamsil")} yPos={120}>
+            Cluster 2
+          </ButtonContainer>
+          <ButtonContainer onClick={() => handleClick("gwangjin")} yPos={220}>
+            Cluster 3
+          </ButtonContainer>
+        </div>
+      )}
 
       {/* Slider for selecting start and end time */}
       {page === "flow" && (
