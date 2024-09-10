@@ -1,13 +1,18 @@
 import styled from "styled-components";
 
 export const H1Title = styled.h1`
-  font-size: 25px;
+  font-size: 45px;
   font-weight: 600;
-  margin-bottom: 30px;
-  line-height: 28px;
+  margin-bottom: 60px;
+  line-height: 1.4;
 `;
 
-export const H2Title = styled.h2``;
+export const H2Title = styled.h2`
+  font-size: 40px;
+  font-weight: 600;
+  margin: 60px 0 60px 0;
+  line-height: 22px;
+`;
 
 export const H3Title = styled.h3`
   font-size: 16px;
@@ -15,5 +20,5 @@ export const H3Title = styled.h3`
   display: inline;
   width: max-content;
   text-decoration: underline;
-  margin: 0 0 15px 0;
+  margin: 15px 0 15px 0;
 `;
