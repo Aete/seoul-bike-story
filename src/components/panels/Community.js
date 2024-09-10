@@ -51,10 +51,6 @@ export default function Community() {
         <br />
       </Description>
       <Description>
-        A total of 130 communities were identified, .
-        <br />
-      </Description>
-      <Description>
         A total of 130 communities were identified, and the top 20 were
         visualized based on the number of trips between stations.
         <br />
