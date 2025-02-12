@@ -48,7 +48,7 @@ export default function ScatterPlot() {
       .attr("text-anchor", "middle")
       .style("font-size", "16px")
       .style("font-weight", "bold")
-      .text("Scatterplot of Out-degree vs Distance to Subway Station")
+      .text("Scatterplot of rents vs Distance to Subway Station")
       .attr("fill", "#fff");
 
     // x축 그리기
@@ -78,7 +78,7 @@ export default function ScatterPlot() {
       .attr("x", -height / 2)
       .attr("text-anchor", "middle")
       .style("font-size", "12px")
-      .text("Out-degree")
+      .text("# of rents")
       .attr("fill", "#fff");
 
     // 데이터 포인트 그리기 (scatter plot)
