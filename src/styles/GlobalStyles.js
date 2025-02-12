@@ -4,13 +4,17 @@ import reset from "styled-reset";
 export const GlobalStyles = createGlobalStyle`
     ${reset}
     html, body{
-        font-family: "Open Sans", sans-serif;
+        font-family: "Roboto", sans-serif;
     }
 
     body{
       display:flex;
       background-color:#0e0e0e;
       justify-content:center;
+      width: calc(100vw - (100vw - 100%));
+      margin: 0;
+      scrollbar-gutter: stable;
+      overflow-x: hidden;
     }
 
     a{
