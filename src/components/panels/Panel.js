@@ -1,13 +1,9 @@
 import styled from "styled-components";
-import { useState } from "react";
-import { useSetRecoilState } from "recoil";
-import { scrollPositionState } from "../../atoms/atom";
+import { useRecoilState } from "recoil";
+import { currentPageState } from "../../atoms/atom";
 
 import Background from "./Background";
 import Community from "./Community";
-import AnalysisHub from "./Analysis";
-import Flow from "./Flow";
-import End from "./End";
 
 const Container = styled.div`
   position: relative;
@@ -32,29 +28,18 @@ const Container = styled.div`
 `;
 
 export default function Panel() {
-  const setScrollPosition = useSetRecoilState(scrollPositionState);
-
-  const handleScroll = (e) => {
-    const currentScrollPosition = e.target.scrollTop;
-    setScrollPosition(currentScrollPosition);
-  };
+  const [pageNumber, setPageNumber] = useRecoilState(currentPageState);
 
   const handleClick = (buttonType, e) => {
     e.preventDefault();
     if (buttonType === "prev") setPageNumber((prev) => prev - 1);
     if (buttonType === "next") setPageNumber((prev) => prev + 1);
-    console.log(pageNumber);
   };
 
-  const [pageNumber, setPageNumber] = useState(0);
-
   return (
-    <Container onScroll={handleScroll}>
+    <Container>
       {pageNumber === 0 && <Background />}
       {pageNumber === 1 && <Community />}
-      {pageNumber === 2 && <AnalysisHub />}
-      {pageNumber === 3 && <Flow />}
-      {pageNumber === 4 && <End />}
       <ButtonGroup handleClick={handleClick} currentPage={pageNumber} />
     </Container>
   );

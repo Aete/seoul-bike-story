@@ -1,14 +1,14 @@
+import styled from "styled-components";
+import { FlyToInterpolator } from "deck.gl";
+import { useRef, useState, useEffect } from "react";
 import DeckGL from "@deck.gl/react";
 import { Map } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-
-import styled from "styled-components";
-
-import { FlyToInterpolator } from "deck.gl";
-
-import { useRef, useState, useEffect } from "react";
-
 import GL from "@luma.gl/constants";
+import { useRecoilValue } from "recoil";
+
+import { arcLayer, communityArcLayer } from "../layers/arcLayer";
+import { currentPageState } from "../atoms/atom";
 
 const Container = styled.div`
   position: sticky;
@@ -29,8 +29,10 @@ const Container = styled.div`
 
 export default function Viz() {
   const ref = useRef(null);
+
   const MAP_STYLE =
     "https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json";
+
   const [viewState, setViewState] = useState({
     latitude: 37.5663,
     longitude: 126.98,
@@ -39,11 +41,14 @@ export default function Viz() {
     transitionInterpolator: new FlyToInterpolator(),
   });
 
+  const currentPage = useRecoilValue(currentPageState);
+  const selectedLayer = currentPage === 0 ? arcLayer : communityArcLayer;
+
   return (
     <Container ref={ref}>
       <DeckGL
         controller={true}
-        layers={[]}
+        layers={[selectedLayer]}
         parameters={{
           blendFunc: [GL.SRC_ALPHA, GL.ONE, GL.ONE_MINUS_DST_ALPHA, GL.ONE],
           blendEquation: GL.FUNC_ADD,
