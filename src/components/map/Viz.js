@@ -3,7 +3,9 @@ import {
   FlyToInterpolator,
   GeoJsonLayer,
   ArcLayer,
-  ScatterplotLayer,
+  LineLayer,
+  HeatmapLayer,
+  SimpleMeshLayer,
 } from "deck.gl";
 import { useRef, useState, useEffect } from "react";
 import { useRecoilValue } from "recoil";
@@ -12,6 +14,7 @@ import DeckGL from "@deck.gl/react";
 import { Map } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import GL from "@luma.gl/constants";
+import { SphereGeometry } from "@luma.gl/engine";
 
 import { currentPageState } from "../../atoms/atom";
 import sampleEntireTrip from "../../utils/data/bike_rental_history_sample.json";
@@ -55,6 +58,8 @@ export default function Viz() {
   const communityArcLayer = getCommunityArcLayer();
   const bikeLaneLayer = getBikeLaneLayer();
   const subwayLayer = getStationLayer();
+  const subwayLineLayer = getStationLineLayer();
+  const magokHeatmapLayer = getMagokHeatmapLayer();
 
   const currentPage = useRecoilValue(currentPageState);
 
@@ -67,6 +72,17 @@ export default function Viz() {
           zoom: 13.5,
           transitionDuration: 1000,
           transitionInterpolator: new FlyToInterpolator(),
+        });
+        break;
+      case 3:
+        setViewState({
+          latitude: 37.5638,
+          longitude: 126.83,
+          zoom: 13.5,
+          transitionDuration: 1500,
+          transitionInterpolator: new FlyToInterpolator(),
+          pitch: 50,
+          bearing: 0.5,
         });
         break;
       default:
@@ -88,7 +104,9 @@ export default function Viz() {
           currentPage === 0 && arcLayer,
           currentPage === 1 && communityArcLayer,
           currentPage === 2 && bikeLaneLayer,
-          currentPage === 2 && subwayLayer,
+          (currentPage === 2 || currentPage === 3) && subwayLayer,
+          (currentPage === 2 || currentPage === 3) && subwayLineLayer,
+          currentPage === 3 && magokHeatmapLayer,
         ]}
         parameters={{
           blendFunc: [GL.SRC_ALPHA, GL.ONE, GL.ONE_MINUS_DST_ALPHA, GL.ONE],
@@ -96,6 +114,7 @@ export default function Viz() {
         }}
         viewState={viewState}
         onViewStateChange={({ viewState }) => setViewState(viewState)}
+        useWebGL2={true}
       >
         <Map
           mapboxAccessToken={
@@ -135,6 +154,18 @@ function getCommunityArcLayer() {
   });
 }
 
+function getMagokHeatmapLayer() {
+  return new HeatmapLayer({
+    id: "magok-heatmap-layer",
+    data: communitySample,
+    getPosition: (d) => [d.origin_lng, d.origin_lat],
+    getWeight: 1,
+    radiusPixels: 100,
+    intensity: 1,
+    threshold: 0.03,
+  });
+}
+
 function getBikeLaneLayer() {
   return new GeoJsonLayer({
     id: "bike-lane-layer",
@@ -147,16 +178,40 @@ function getBikeLaneLayer() {
 }
 
 function getStationLayer() {
-  return new ScatterplotLayer({
-    id: "subway-station-layer",
+  const sphere = new SphereGeometry({
+    radius: 0.1,
+    nlat: 20,
+    nlong: 20,
+  });
+
+  const sphereLayer = new SimpleMeshLayer({
+    id: "sphere-layer",
     data: subwayStation,
-    filled: true,
-    stroked: false,
-    getRadius: 20,
-    getPosition: (d) => {
-      return [parseFloat(d.longitude), parseFloat(d.latitude)];
+    mesh: sphere,
+    getPosition: (d) => [d.longitude, d.latitude, 400],
+    getColor: [255, 255, 255, 255],
+    getScale: (d) => [d.count, d.count, d.count],
+    sizeScale: 600,
+    getOrientation: [0, 0, 0],
+    material: {
+      ambient: 1,
+      diffuse: 0,
+      shininess: 0,
+      specularColor: [0, 0, 0],
     },
-    opacity: 0.8,
-    getFillColor: [255, 0, 0],
+    pickable: true,
+  });
+
+  return sphereLayer;
+}
+
+function getStationLineLayer() {
+  return new LineLayer({
+    id: "line-layer",
+    data: subwayStation,
+    getSourcePosition: (d) => [d.longitude, d.latitude, 0],
+    getTargetPosition: (d) => [d.longitude, d.latitude, 400],
+    getColor: [255, 255, 255, 255],
+    opacity: 0.3,
   });
 }
