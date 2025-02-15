@@ -4,6 +4,7 @@ import { currentPageState } from "../../atoms/atom";
 
 import Background from "./Background";
 import Community from "./Community";
+import MagokOverview from "./magok/MagokOverview";
 
 const Container = styled.div`
   position: relative;
@@ -40,6 +41,7 @@ export default function Panel() {
     <Container>
       {pageNumber === 0 && <Background />}
       {pageNumber === 1 && <Community />}
+      {pageNumber === 2 && <MagokOverview />}
       <ButtonGroup handleClick={handleClick} currentPage={pageNumber} />
     </Container>
   );

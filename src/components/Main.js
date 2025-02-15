@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Viz from "./Viz";
+import Viz from "./map/Viz";
 import Panel from "./panels/Panel";
 
 const Container = styled.div`
