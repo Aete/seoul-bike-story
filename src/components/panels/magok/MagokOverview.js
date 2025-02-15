@@ -14,23 +14,15 @@ export default function MagokOverview() {
     <Container>
       <H2Title>Community 1: Magok</H2Title>
       <Description>
-        To divide the entire network into meaningful segments, I adopted the
-        concept of 'Community Detection' from Network Science. The Louvain
-        method was applied to identify communities within the public bike
-        network.
+        Magok District, located adjacent to Gimpo Airport, is one of Seoul's
+        newer areas. As a result, it boasts an exceptionally well-developed
+        network of bicycle paths (marked in green) compared to other parts of
+        the city.
       </Description>
-      {window.innerWidth > 768 && (
-        <Description>
-          A total of 83 communities were identified, and the top 10 were
-          visualized based on the number of trips between bike stations. A
-          community within Magok district was found to have the highest trip
-          volume. Yeongdeungpo and Mok-dong were also identified as strong
-          communities.
-        </Description>
-      )}
       <Description>
-        For this project, I focused on analyzing the three communities with the
-        highest trip volumes.
+        On the map, subway stations are depicted as white circles. The radius of
+        each circle is proportional to the number of subway lines passing
+        through that particular station.
       </Description>
     </Container>
   );
