@@ -21,8 +21,7 @@ export default function MagokOverview() {
       </Description>
       <Description>
         On the map, subway stations are depicted as white circles. The radius of
-        each circle is proportional to the number of subway lines passing
-        through that particular station.
+        the circle represents the square root of the hourly (entrance) count.
       </Description>
     </Container>
   );

@@ -16,8 +16,21 @@ const LegendContainer = styled.div`
     margin-bottom: 10px;
   }
 
-  & li {
+  & li:first-child {
     margin-bottom: 5px;
+  }
+
+  @media screen and (max-width: 768px) {
+    top: 5px;
+    right: 5px;
+
+    & p {
+      font-size: 14px;
+    }
+
+    & li {
+      font-size: 14px;
+    }
   }
 `;
 

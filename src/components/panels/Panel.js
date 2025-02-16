@@ -5,6 +5,8 @@ import { currentPageState } from "../../atoms/atom";
 import Background from "./Background";
 import Community from "./Community";
 import MagokOverview from "./magok/MagokOverview";
+import MagokRent from "./magok/MagokRent";
+import MagokReturn from "./magok/MagokReturn";
 
 const Container = styled.div`
   position: relative;
@@ -42,6 +44,8 @@ export default function Panel() {
       {pageNumber === 0 && <Background />}
       {pageNumber === 1 && <Community />}
       {pageNumber === 2 && <MagokOverview />}
+      {pageNumber === 3 && <MagokRent />}
+      {pageNumber === 4 && <MagokReturn />}
       <ButtonGroup handleClick={handleClick} currentPage={pageNumber} />
     </Container>
   );
@@ -89,13 +93,32 @@ const Button = styled.button`
   }
 `;
 
+const DisabledButton = styled.button`
+  width: 80px;
+  height: 30px;
+  border: 1px solid #333;
+  color: #333;
+  margin-right: 20px;
+
+  @media screen and (max-width: 768px) {
+    width: 60px;
+    height: 20px;
+    margin-right: 10px;
+  }
+`;
+
 function ButtonGroup({ handleClick, currentPage }) {
   return (
     <ButtonContainer>
+      {currentPage === 0 && <DisabledPrevButton />}
       {currentPage !== 0 && <PrevButton handleClick={handleClick} />}
       {currentPage !== 4 && <NextButton handleClick={handleClick} />}
     </ButtonContainer>
   );
+}
+
+function DisabledPrevButton() {
+  return <DisabledButton disabled>Previous</DisabledButton>;
 }
 
 function PrevButton({ handleClick }) {
