@@ -24,13 +24,12 @@ export default function Community() {
           A total of 83 communities were identified, and the top 10 were
           visualized based on the number of trips between bike stations. A
           community within Magok district was found to have the highest trip
-          volume. Yeongdeungpo and Mok-dong were also identified as strong
-          communities.
+          volume.
         </Description>
       )}
       <Description>
-        For this project, I focused on analyzing the three communities with the
-        highest trip volumes.
+        For this project, I will focus on data visualization of bike trip
+        patterns within the Magok district.
       </Description>
     </Container>
   );

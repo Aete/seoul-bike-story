@@ -12,7 +12,7 @@ const Container = styled.div`
 export default function MagokRent() {
   return (
     <Container>
-      <H2Title>Community 1: Magok</H2Title>
+      <H2Title>Rental</H2Title>
       <Description>
         An analysis of the heatmap reveals a significant pattern in the
         bike-sharing system's usage.

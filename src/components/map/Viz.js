@@ -16,14 +16,22 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import GL from "@luma.gl/constants";
 import { SphereGeometry } from "@luma.gl/engine";
 
-import { currentPageState, peakBoolState } from "../../atoms/atom";
+import {
+  currentPageState,
+  peakBoolState,
+  rentBoolState,
+  returnBoolState,
+} from "../../atoms/atom";
 import sampleEntireTrip from "../../utils/data/bike_rental_history_sample.json";
 import communitySample from "../../utils/data/bike_rental_history_weekday_community_agg.json";
-import tripData from "../../utils/data/bike_rental_history_weekday_community.json";
+import top3TotalAgg from "../../utils/data/bike_rental_history_weekday_community_agg_top3.json";
+import top3PeakAgg from "../../utils/data/bike_rental_history_weekday_community_top3_agg_peak.json";
 import bikeLane from "../../utils/data/seoul_bike_lane.geojson";
 import subwayStation from "../../utils/data/subway_traffic_hourly_avg.json";
+import magokLandUse from "../../utils/data/magok_landuse_processed.geojson";
 import Legend from "./Legend";
 import PeakChecker from "./PeakChecker";
+import RentChecker from "./RentChecker";
 
 const Container = styled.div`
   position: sticky;
@@ -60,6 +68,8 @@ export default function Viz() {
 
   const currentPage = useRecoilValue(currentPageState);
   const isPeak = useRecoilValue(peakBoolState);
+  const isRent = useRecoilValue(rentBoolState);
+  const isReturn = useRecoilValue(returnBoolState);
 
   const arcLayer = getArcLayer();
   const communityArcLayer = getCommunityArcLayer();
@@ -72,6 +82,9 @@ export default function Viz() {
   const magokReturnHeatmapLayer = isPeak
     ? getMagokPeakReturnHeatmapLayer()
     : getMagokReturnHeatmapLayer();
+  const magokRentArcLayer = getPeakSubwayRentMagokArc();
+  const magokReturnArcLayer = getPeakSubwayReturnMagokArc();
+  const magokLandUseLayer = getMagokLanduseLayer();
 
   useEffect(() => {
     switch (currentPage) {
@@ -82,18 +95,21 @@ export default function Viz() {
           zoom: width > 768 ? 13.5 : 13,
           transitionDuration: 1000,
           transitionInterpolator: new FlyToInterpolator(),
+          pitch: 0,
+          bearing: 0,
         });
         break;
       case 3:
       case 4:
+      case 5:
         setViewState({
           latitude: 37.5638,
           longitude: 126.83,
           zoom: width > 768 ? 13.5 : 13,
           transitionDuration: 1500,
           transitionInterpolator: new FlyToInterpolator(),
-          pitch: 50,
-          bearing: 0.5,
+          pitch: 45,
+          bearing: 315,
         });
         break;
       default:
@@ -119,6 +135,9 @@ export default function Viz() {
           currentPage > 1 && currentPage < 5 && subwayLineLayer,
           currentPage === 3 && magokHeatmapLayer,
           currentPage === 4 && magokReturnHeatmapLayer,
+          currentPage === 5 && isRent && magokRentArcLayer,
+          currentPage === 5 && isReturn && magokReturnArcLayer,
+          currentPage === 5 && magokLandUseLayer,
         ]}
         parameters={{
           blendFunc: [GL.SRC_ALPHA, GL.ONE, GL.ONE_MINUS_DST_ALPHA, GL.ONE],
@@ -137,6 +156,7 @@ export default function Viz() {
       </DeckGL>
       {currentPage === 2 && <Legend />}
       {currentPage > 1 && currentPage < 5 && <PeakChecker />}
+      {currentPage === 5 && <RentChecker />}
     </Container>
   );
 }
@@ -160,9 +180,9 @@ function getCommunityArcLayer() {
     getSourcePosition: (d) => [d.origin_lng, d.origin_lat],
     getTargetPosition: (d) => [d.desti_lng, d.desti_lat],
     getSourceColor: (d) =>
-      d.community < 3 ? [255, 93, 93] : [255, 128, 93, 50],
+      d.community < 1 ? [255, 93, 93] : [255, 128, 93, 50],
     getTargetColor: (d) =>
-      d.community < 3 ? [255, 93, 93] : [255, 128, 93, 50],
+      d.community < 1 ? [255, 93, 93] : [255, 128, 93, 50],
     getWidth: 1,
   });
 }
@@ -170,7 +190,7 @@ function getCommunityArcLayer() {
 function getMagokHeatmapLayer() {
   return new HeatmapLayer({
     id: "magok-heatmap-layer",
-    data: communitySample,
+    data: top3TotalAgg,
     getPosition: (d) => [d.origin_lng, d.origin_lat],
     getWeight: (d) => d.count,
     radiusPixels: 100,
@@ -182,10 +202,10 @@ function getMagokHeatmapLayer() {
 
 function getMagokPeakHeatmapLayer() {
   return new HeatmapLayer({
-    id: "magok-heatmap-layer",
-    data: tripData.filter((d) => d.rent_hour === 8),
+    id: "magok-heatmap-peak-layer",
+    data: top3PeakAgg,
     getPosition: (d) => [d.origin_lng, d.origin_lat],
-    getWeight: 1,
+    getWeight: (d) => d.count,
     radiusPixels: 100,
     intensity: 1,
     threshold: 0.03,
@@ -195,8 +215,8 @@ function getMagokPeakHeatmapLayer() {
 
 function getMagokReturnHeatmapLayer() {
   return new HeatmapLayer({
-    id: "magok-heatmap-layer",
-    data: communitySample,
+    id: "magok-heatmap-return-layer",
+    data: top3TotalAgg,
     getPosition: (d) => [d.desti_lng, d.desti_lat],
     getWeight: (d) => d.count,
     radiusPixels: 100,
@@ -208,14 +228,42 @@ function getMagokReturnHeatmapLayer() {
 
 function getMagokPeakReturnHeatmapLayer() {
   return new HeatmapLayer({
-    id: "magok-heatmap-layer",
-    data: tripData.filter((d) => d.rent_hour === 8),
+    id: "magok-heatmap-return-peak-layer",
+    data: top3PeakAgg,
     getPosition: (d) => [d.desti_lng, d.desti_lat],
-    getWeight: 1,
+    getWeight: (d) => d.count,
     radiusPixels: 100,
     intensity: 1,
     threshold: 0.03,
     opacity: 0.8,
+  });
+}
+
+function getPeakSubwayRentMagokArc() {
+  return new ArcLayer({
+    id: "peak-subway-rent-magok-arc",
+    data: top3PeakAgg.filter((d) =>
+      ["ST-2031", "ST-1718", "ST-2045"].includes(d.origin_station_id)
+    ),
+    getSourcePosition: (d) => [d.origin_lng, d.origin_lat],
+    getTargetPosition: (d) => [d.desti_lng, d.desti_lat],
+    getSourceColor: [209, 55, 78],
+    getTargetColor: [1, 152, 189],
+    getWidth: (d) => d.count,
+  });
+}
+
+function getPeakSubwayReturnMagokArc() {
+  return new ArcLayer({
+    id: "peak-subway-return-magok-arc",
+    data: top3PeakAgg.filter((d) =>
+      ["ST-2031", "ST-1718", "ST-2045"].includes(d.desti_station_id)
+    ),
+    getSourcePosition: (d) => [d.origin_lng, d.origin_lat],
+    getTargetPosition: (d) => [d.desti_lng, d.desti_lat],
+    getSourceColor: [209, 55, 78],
+    getTargetColor: [1, 152, 189],
+    getWidth: (d) => d.count,
   });
 }
 
@@ -300,5 +348,24 @@ function getStationLineLayer() {
     getTargetPosition: (d) => [d.longitude, d.latitude, 400],
     getColor: [255, 255, 255, 255],
     opacity: 0.3,
+  });
+}
+
+function getMagokLanduseLayer() {
+  return new GeoJsonLayer({
+    id: "magok-landuse-layer",
+    data: magokLandUse,
+    filled: true,
+    getFillColor: (d) => {
+      switch (d.properties.landuse) {
+        case 2:
+          return [244, 67, 54];
+        case 1:
+          return [255, 235, 59];
+        default:
+          return [255, 255, 255, 0];
+      }
+    },
+    opacity: 0.02,
   });
 }

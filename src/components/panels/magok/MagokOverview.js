@@ -12,7 +12,7 @@ const Container = styled.div`
 export default function MagokOverview() {
   return (
     <Container>
-      <H2Title>Community 1: Magok</H2Title>
+      <H2Title>Overview</H2Title>
       <Description>
         Magok District, located adjacent to Gimpo Airport, is one of Seoul's
         newer areas. As a result, it boasts an exceptionally well-developed

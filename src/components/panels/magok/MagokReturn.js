@@ -12,7 +12,7 @@ const Container = styled.div`
 export default function MagokReturn() {
   return (
     <Container>
-      <H2Title>Community 1: Magok</H2Title>
+      <H2Title>Hot spots: Return</H2Title>
       <Description>
         Otherwise, let's see a heat map of the number of bike returns. The heat
         map of bike returns shows active returns around subway stations and in

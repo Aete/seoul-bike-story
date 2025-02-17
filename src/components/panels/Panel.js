@@ -7,6 +7,9 @@ import Community from "./Community";
 import MagokOverview from "./magok/MagokOverview";
 import MagokRent from "./magok/MagokRent";
 import MagokReturn from "./magok/MagokReturn";
+import MagokFlow from "./magok/MagokFlow";
+import Reference from "./Source";
+import People from "./People";
 
 const Container = styled.div`
   position: relative;
@@ -46,6 +49,9 @@ export default function Panel() {
       {pageNumber === 2 && <MagokOverview />}
       {pageNumber === 3 && <MagokRent />}
       {pageNumber === 4 && <MagokReturn />}
+      {pageNumber === 5 && <MagokFlow />}
+      {pageNumber === 6 && <Reference />}
+      {pageNumber === 7 && <People />}
       <ButtonGroup handleClick={handleClick} currentPage={pageNumber} />
     </Container>
   );
@@ -112,7 +118,7 @@ function ButtonGroup({ handleClick, currentPage }) {
     <ButtonContainer>
       {currentPage === 0 && <DisabledPrevButton />}
       {currentPage !== 0 && <PrevButton handleClick={handleClick} />}
-      {currentPage !== 4 && <NextButton handleClick={handleClick} />}
+      {currentPage !== 7 && <NextButton handleClick={handleClick} />}
     </ButtonContainer>
   );
 }
