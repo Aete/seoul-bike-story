@@ -31,7 +31,7 @@ import communitySample from "../../utils/data/bike_rental_history_weekday_commun
 import top3TotalAgg from "../../utils/data/bike_rental_history_weekday_community_agg_top3.json";
 import top3PeakAgg from "../../utils/data/bike_rental_history_weekday_community_top3_agg_peak.json";
 import bikeLane from "../../utils/data/magok_bike_lane.geojson";
-import subwayStation from "../../utils/data/subway_traffic_hourly_avg.json";
+import subwayStation from "../../utils/data/magok_subway_traffic_hourly_avg.json";
 import magokLandUse from "../../utils/data/magok_landuse_processed.geojson";
 import magokPeakRoutes from "../../utils/data/magok_trips_peak_path.geojson";
 import magokPeakTrips from "../../utils/data/magok_trips_peak_path.json";
