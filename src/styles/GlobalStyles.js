@@ -17,6 +17,12 @@ export const GlobalStyles = createGlobalStyle`
       overflow-x: hidden;
     }
 
+    label{
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
     a{
         text-decoration: none;
         color: inherit;

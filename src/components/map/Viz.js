@@ -6,9 +6,11 @@ import {
   LineLayer,
   HeatmapLayer,
   SimpleMeshLayer,
+  TripsLayer,
 } from "deck.gl";
 import { useRef, useState, useEffect } from "react";
 import { useRecoilValue } from "recoil";
+import { animate } from "popmotion";
 
 import DeckGL from "@deck.gl/react";
 import { Map } from "react-map-gl";
@@ -21,6 +23,8 @@ import {
   peakBoolState,
   rentBoolState,
   returnBoolState,
+  animationBoolState,
+  landuseBoolState,
 } from "../../atoms/atom";
 import sampleEntireTrip from "../../utils/data/bike_rental_history_sample.json";
 import communitySample from "../../utils/data/bike_rental_history_weekday_community_agg.json";
@@ -29,9 +33,15 @@ import top3PeakAgg from "../../utils/data/bike_rental_history_weekday_community_
 import bikeLane from "../../utils/data/seoul_bike_lane.geojson";
 import subwayStation from "../../utils/data/subway_traffic_hourly_avg.json";
 import magokLandUse from "../../utils/data/magok_landuse_processed.geojson";
+import magokPeakRoutes from "../../utils/data/magok_trips_peak_path.geojson";
+import magokPeakTrips from "../../utils/data/magok_trips_peak_path.json";
 import Legend from "./Legend";
 import PeakChecker from "./PeakChecker";
 import RentChecker from "./RentChecker";
+import ColorLegend from "./FlowLegend";
+import AnimChecker from "./AnimChecker";
+import Timer from "./Timer";
+import LandChecker from "./LandUseChecker";
 
 const Container = styled.div`
   position: sticky;
@@ -70,25 +80,14 @@ export default function Viz() {
   const isPeak = useRecoilValue(peakBoolState);
   const isRent = useRecoilValue(rentBoolState);
   const isReturn = useRecoilValue(returnBoolState);
-
-  const arcLayer = getArcLayer();
-  const communityArcLayer = getCommunityArcLayer();
-  const bikeLaneLayer = getBikeLaneLayer();
-  const subwayLayer = isPeak ? getStationPeakLayer() : getStationLayer();
-  const subwayLineLayer = getStationLineLayer();
-  const magokHeatmapLayer = isPeak
-    ? getMagokPeakHeatmapLayer()
-    : getMagokHeatmapLayer();
-  const magokReturnHeatmapLayer = isPeak
-    ? getMagokPeakReturnHeatmapLayer()
-    : getMagokReturnHeatmapLayer();
-  const magokRentArcLayer = getPeakSubwayRentMagokArc();
-  const magokReturnArcLayer = getPeakSubwayReturnMagokArc();
-  const magokLandUseLayer = getMagokLanduseLayer();
+  const isAnimation = useRecoilValue(animationBoolState);
+  const isLand = useRecoilValue(landuseBoolState);
 
   useEffect(() => {
     switch (currentPage) {
       case 2:
+      case 6:
+      case 7:
         setViewState({
           latitude: 37.5638,
           longitude: 126.83,
@@ -123,6 +122,53 @@ export default function Viz() {
     }
   }, [currentPage, width]);
 
+  const [time, setTime] = useState(28800);
+  const animationSpeed = 10;
+  const loopLength = 3600;
+
+  useEffect(() => {
+    let animation;
+    if (isAnimation) {
+      animation = animate({
+        from: 28800,
+        to: 28800 + 3600,
+        duration: (loopLength * 60) / animationSpeed,
+        repeat: Infinity,
+        onUpdate: setTime,
+      });
+    }
+    return () => animation?.stop();
+  }, [isAnimation, loopLength, animationSpeed]);
+
+  const magokTripLayer = new TripsLayer({
+    id: "magok-trip-layer",
+    data: magokPeakTrips,
+    getPath: (d) => d.path,
+    getTimestamps: (d) => d.timestamp,
+    getColor: [255, 128, 93],
+    opacity: 1,
+    widthMinPixels: 2,
+    trailLength: 100,
+    currentTime: time,
+    shadowEnabled: false,
+  });
+
+  const arcLayer = getArcLayer();
+  const communityArcLayer = getCommunityArcLayer();
+  const bikeLaneLayer = getBikeLaneLayer();
+  const subwayLayer = isPeak ? getStationPeakLayer() : getStationLayer();
+  const subwayLineLayer = getStationLineLayer();
+  const magokHeatmapLayer = isPeak
+    ? getMagokPeakHeatmapLayer()
+    : getMagokHeatmapLayer();
+  const magokReturnHeatmapLayer = isPeak
+    ? getMagokPeakReturnHeatmapLayer()
+    : getMagokReturnHeatmapLayer();
+  const magokRentArcLayer = getPeakSubwayRentMagokArc();
+  const magokReturnArcLayer = getPeakSubwayReturnMagokArc();
+  const magokLandUseLayer = getMagokLanduseLayer();
+  const magokPeakRouteLayer = getMagokPeakRouteLayer();
+
   return (
     <Container ref={ref}>
       <DeckGL
@@ -138,6 +184,9 @@ export default function Viz() {
           currentPage === 5 && isRent && magokRentArcLayer,
           currentPage === 5 && isReturn && magokReturnArcLayer,
           currentPage === 5 && magokLandUseLayer,
+          currentPage >= 6 && isLand === true && magokLandUseLayer,
+          currentPage >= 6 && isAnimation === false && magokPeakRouteLayer,
+          currentPage >= 6 && isAnimation === true && magokTripLayer,
         ]}
         parameters={{
           blendFunc: [GL.SRC_ALPHA, GL.ONE, GL.ONE_MINUS_DST_ALPHA, GL.ONE],
@@ -157,6 +206,10 @@ export default function Viz() {
       {currentPage === 2 && <Legend />}
       {currentPage > 1 && currentPage < 5 && <PeakChecker />}
       {currentPage === 5 && <RentChecker />}
+      {currentPage === 5 && <ColorLegend />}
+      {currentPage >= 6 && <AnimChecker />}
+      {currentPage >= 6 && <LandChecker />}
+      {currentPage >= 6 && isAnimation && <Timer time={time} />}
     </Container>
   );
 }
@@ -367,5 +420,16 @@ function getMagokLanduseLayer() {
       }
     },
     opacity: 0.02,
+  });
+}
+
+function getMagokPeakRouteLayer() {
+  return new GeoJsonLayer({
+    id: "magok-path-layer",
+    data: magokPeakRoutes,
+    filled: false,
+    lineWidthMinPixels: 5,
+    getLineColor: [255, 128, 93, 5],
+    getLineWidth: 1,
   });
 }

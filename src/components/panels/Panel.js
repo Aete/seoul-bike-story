@@ -10,6 +10,7 @@ import MagokReturn from "./magok/MagokReturn";
 import MagokFlow from "./magok/MagokFlow";
 import Reference from "./Source";
 import People from "./People";
+import MagokRoute from "./magok/MagokTrip";
 
 const Container = styled.div`
   position: relative;
@@ -50,8 +51,9 @@ export default function Panel() {
       {pageNumber === 3 && <MagokRent />}
       {pageNumber === 4 && <MagokReturn />}
       {pageNumber === 5 && <MagokFlow />}
-      {pageNumber === 6 && <Reference />}
-      {pageNumber === 7 && <People />}
+      {pageNumber === 6 && <MagokRoute />}
+      {pageNumber === 7 && <Reference />}
+      {pageNumber === 8 && <People />}
       <ButtonGroup handleClick={handleClick} currentPage={pageNumber} />
     </Container>
   );
@@ -118,13 +120,18 @@ function ButtonGroup({ handleClick, currentPage }) {
     <ButtonContainer>
       {currentPage === 0 && <DisabledPrevButton />}
       {currentPage !== 0 && <PrevButton handleClick={handleClick} />}
-      {currentPage !== 7 && <NextButton handleClick={handleClick} />}
+      {currentPage !== 8 && <NextButton handleClick={handleClick} />}
+      {currentPage === 8 && <DisabledNextButton />}
     </ButtonContainer>
   );
 }
 
 function DisabledPrevButton() {
   return <DisabledButton disabled>Previous</DisabledButton>;
+}
+
+function DisabledNextButton() {
+  return <DisabledButton disabled>Next</DisabledButton>;
 }
 
 function PrevButton({ handleClick }) {

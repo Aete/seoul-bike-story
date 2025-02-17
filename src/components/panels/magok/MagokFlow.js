@@ -21,8 +21,8 @@ export default function MagokFlow() {
         district where is the most popular spot for public bike usage.`}
       </Description>
       <Description>
-        During peak hours, bike rented near the subway station were mostly
-        returned in commercial areas. Conversely, bike returned near the subway
+        During peak hours, bikes rented near the subway station were mostly
+        returned in commercial areas. Conversely, bikes returned near the subway
         station were often rented from residential areas on the outskirts of the
         district.
       </Description>

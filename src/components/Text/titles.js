@@ -8,7 +8,7 @@ export const H2Title = styled.h2`
 
   @media screen and (max-width: 1280px) {
     font-size: 28px;
-    margin: 0 0 30px 0;
+    margin: 20px 0 30px 0;
   }
 
   @media screen and (max-width: 768px) {

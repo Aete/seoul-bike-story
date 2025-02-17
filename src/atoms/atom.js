@@ -19,3 +19,13 @@ export const rentBoolState = atom({
   key: "rentBoolState",
   default: true,
 });
+
+export const animationBoolState = atom({
+  key: "animationBoolState",
+  default: false,
+});
+
+export const landuseBoolState = atom({
+  key: "landuseBoolState",
+  default: false,
+});
