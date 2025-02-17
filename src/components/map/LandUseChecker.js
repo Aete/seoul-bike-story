@@ -4,16 +4,16 @@ import { useRecoilState } from "recoil";
 
 const Container = styled.div`
   position: absolute;
-  top: 90px;
-  left: 40px;
+  top: 40px;
+  left: 200px;
   background-color: rgba(21, 21, 21, 0.8);
   color: #eee;
   padding: 10px;
   box-sizing: border-box;
 
   @media screen and (max-width: 768px) {
-    top: 50px;
-    left: 5px;
+    top: 5px;
+    left: 150px;
     font-size: 14px;
   }
 `;

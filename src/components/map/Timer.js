@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const Container = styled.div`
   position: absolute;
-  top: 140px;
+  top: 90px;
   left: 40px;
   background-color: rgba(21, 21, 21, 0.8);
   color: #eee;
@@ -10,7 +10,7 @@ const Container = styled.div`
   box-sizing: border-box;
 
   @media screen and (max-width: 768px) {
-    top: 95px;
+    top: 45px;
     left: 5px;
     font-size: 14px;
   }
