@@ -88,6 +88,7 @@ export default function Viz() {
       case 2:
       case 6:
       case 7:
+      case 8:
         setViewState({
           latitude: 37.5638,
           longitude: 126.83,

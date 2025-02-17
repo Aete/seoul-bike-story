@@ -16,7 +16,7 @@ export default function MagokFlow() {
       <Description>
         This trend becomes more evident when I drew arches of bike trips between
         bike stations.{" "}
-        {window.innerWidth > 768 &&
+        {window.innerWidth > 390 &&
           `I focused on a subway station in the center of the
         district where is the most popular spot for public bike usage.`}
       </Description>

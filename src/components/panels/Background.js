@@ -29,7 +29,7 @@ export default function Title() {
           we effectively divide the extensive bike-sharing network within the
           city into meaningful sub-networks?'
         </Description>
-        {window.innerWidth > 768 && (
+        {window.innerWidth > 390 && (
           <Description>
             By addressing this question, we aim to uncover insights into bike
             mobility patterns, dynamics, and the relationship between bike usage

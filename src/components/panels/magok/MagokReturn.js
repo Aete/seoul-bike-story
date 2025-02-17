@@ -22,7 +22,7 @@ export default function MagokReturn() {
         This suggests a mixed pattern in Magok during peak times: 1) trips from
         residential areas to subway stations, and 2) trips from subway stations
         to business areas
-        {window.innerWidth > 768 && (
+        {window.innerWidth > 390 && (
           <span>
             , indicating the system's role in facilitating last-mile
             connectivity for commuters

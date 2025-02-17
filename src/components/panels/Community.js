@@ -19,7 +19,7 @@ export default function Community() {
         method was applied to identify communities within the public bike
         network.
       </Description>
-      {window.innerWidth > 768 && (
+      {window.innerWidth > 390 && (
         <Description>
           A total of 83 communities were identified, and the top 10 were
           visualized based on the number of trips between bike stations. A

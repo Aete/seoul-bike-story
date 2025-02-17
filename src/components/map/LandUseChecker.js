@@ -12,7 +12,7 @@ const Container = styled.div`
   box-sizing: border-box;
 
   @media screen and (max-width: 768px) {
-    top: 55px;
+    top: 50px;
     left: 5px;
     font-size: 14px;
   }

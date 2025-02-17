@@ -13,8 +13,19 @@ export default function MagokRoute() {
   return (
     <Container>
       <H2Title>Route</H2Title>
-      <Description>////////</Description>
-      <Description>/////////////</Description>
+      <Description>
+        I calculated routes of various bike trips occuring during the peak time.
+        in Magok. This method helps us to simulate which roads will have the
+        highest bicycle traffic volume at peak time.
+      </Description>
+      <Description>
+        By breaking down the time intervals further and creating animations, I
+        believe it will be possible to predict bicycle traffic flow on a
+        minute-by-minute basis.{" "}
+        {window.innerWidth > 390 &&
+          `This approach offers a powerful tool for
+        visualizing and anticipating bicycle movement patterns throughout Magok.`}
+      </Description>
     </Container>
   );
 }
