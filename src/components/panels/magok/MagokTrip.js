@@ -14,9 +14,9 @@ export default function MagokRoute() {
     <Container>
       <H2Title>Route</H2Title>
       <Description>
-        I calculated routes of various bike trips occuring during the peak time.
-        in Magok. This method helps us to simulate which roads will have the
-        highest bicycle traffic volume at peak time.
+        I calculated routes of various bike trips occuring during the peak time
+        in Magok with Kakao Navigation API. This method helps us to simulate
+        which roads will have the highest bicycle traffic volume at peak time.
       </Description>
       <Description>
         By breaking down the time intervals further and creating animations, I
