@@ -66,7 +66,7 @@ export default function Viz() {
   const MAP_STYLE =
     "https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json";
 
-  const width = window.innerWidth;
+  const [width] = useState(window.innerWidth);
 
   const [viewState, setViewState] = useState({
     latitude: 37.5663,
@@ -195,7 +195,6 @@ export default function Viz() {
         }}
         viewState={viewState}
         onViewStateChange={({ viewState }) => setViewState(viewState)}
-        useWebGL2={true}
       >
         <Map
           mapboxAccessToken={
