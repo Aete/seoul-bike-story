@@ -218,7 +218,7 @@ export default function Viz() {
 function getArcLayer() {
   return new ArcLayer({
     id: "arc-layer",
-    data: sampleEntireTrip,
+    data: sampleEntireTrip.slice(0, 30000),
     getSourcePosition: (d) => [d.origin_lng, d.origin_lat],
     getTargetPosition: (d) => [d.desti_lng, d.desti_lat],
     getSourceColor: [255, 128, 93],
