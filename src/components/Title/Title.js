@@ -51,6 +51,17 @@ const PageSubTitle = styled.p`
   }
 `;
 
+const Warning = styled.p`
+  font-family: "Noto Serif", serif;
+  font-weight: 400;
+  font-size: 13px;
+  color: #424242;
+  text-align: center;
+  line-height: 160%;
+  letter-spacing: 0.05em;
+  margin-top: 20px;
+`;
+
 export default function Title() {
   return (
     <Container>
@@ -58,6 +69,11 @@ export default function Title() {
       <PageSubTitle>
         Exploring Community-Level Patterns in Seoul's Public Bike Network
       </PageSubTitle>
+      {window.innerWidth < 768 && (
+        <Warning>
+          This application may have limited performance on mobile devices.
+        </Warning>
+      )}
       <ScrollDown />
     </Container>
   );
