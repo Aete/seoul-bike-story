@@ -18,19 +18,54 @@ export default function Reference() {
       <H3Title>Data</H3Title>
       <UL>
         <Li>
-          Public Bike Rental History (<AText>link</AText>)
+          Public Bike Rental History (
+          <AText
+            href="https://data.seoul.go.kr/dataList/OA-15182/F/1/datasetView.do"
+            target="_blank"
+          >
+            link
+          </AText>
+          )
         </Li>
         <Li>
-          Public Bike Station Location (<AText>link</AText>)
+          Public Bike Station Location (
+          <AText
+            href="https://data.seoul.go.kr/dataList/OA-21235/S/1/datasetView.do"
+            target="_blank"
+          >
+            link
+          </AText>
+          )
         </Li>
         <Li>
-          Bike Lane Location (<AText>link</AText>)
+          Bike Lane Location (
+          <AText
+            href="https://map.seoul.go.kr/smgis2/themeGallery/detail?theme_id=1657588761062"
+            target="_blank"
+          >
+            link
+          </AText>
+          )
         </Li>
         <Li>
-          Subway Station Location (<AText>link</AText>)
+          Subway Station Location (
+          <AText
+            href="https://data.seoul.go.kr/dataList/OA-21232/S/1/datasetView.do"
+            target="_blank"
+          >
+            link
+          </AText>
+          )
         </Li>
         <Li>
-          Land Use (<AText>link</AText>)
+          Land Use (
+          <AText
+            href="https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?svcCde=NA&dsId=4"
+            target="_blank"
+          >
+            link
+          </AText>
+          )
         </Li>
       </UL>
       {window.innerWidth > 768 && (
