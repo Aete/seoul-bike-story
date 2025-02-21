@@ -328,7 +328,10 @@ function getBikeLaneLayer() {
     filled: false,
     lineWidthMinPixels: 5,
     getLineColor: [76, 175, 80, 80],
-    getLineWidth: 10,
+    lineWidthUnits: "pixels",
+    lineWidth: 5,
+    pickable: false,
+    autoHighlight: false,
   });
 }
 
@@ -357,7 +360,6 @@ function getStationLayer() {
       shininess: 0,
       specularColor: [0, 0, 0],
     },
-    pickable: true,
   });
 
   return sphereLayer;
@@ -388,7 +390,6 @@ function getStationPeakLayer() {
       shininess: 0,
       specularColor: [0, 0, 0],
     },
-    pickable: true,
   });
 
   return sphereLayer;
