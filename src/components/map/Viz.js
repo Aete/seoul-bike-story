@@ -195,6 +195,7 @@ export default function Viz() {
         }}
         viewState={viewState}
         onViewStateChange={({ viewState }) => setViewState(viewState)}
+        useWebGL2={false}
       >
         <Map
           mapboxAccessToken={
